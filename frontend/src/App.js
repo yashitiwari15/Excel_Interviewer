@@ -1,6 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react';
 import './App.css';
 
+// Backend URL configuration
+const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || 'http://localhost:5001';
+
 // Landing Page Component
 const LandingPage = ({ onStartInterview, onViewDemo }) => {
   return (
@@ -79,7 +82,6 @@ const LandingPage = ({ onStartInterview, onViewDemo }) => {
   );
 };
 
-
 // Login Component
 const LoginForm = ({ onLogin, onBackToHome }) => {
   const [formData, setFormData] = useState({
@@ -153,7 +155,7 @@ const LoginForm = ({ onLogin, onBackToHome }) => {
 
           <button type="submit" className="auth-submit-btn">
             Begin 10-Minute Assessment
-            <span className="btn-icon"></span>
+            <span className="btn-icon">🚀</span>
           </button>
         </form>
 
@@ -164,6 +166,8 @@ const LoginForm = ({ onLogin, onBackToHome }) => {
     </div>
   );
 };
+
+// Progress Bar Component
 const ProgressBar = ({ timeRemaining, questionsAnswered, maxTime, maxQuestions }) => {
   const timeProgress = ((maxTime - timeRemaining) / maxTime) * 100;
   const questionProgress = (questionsAnswered / maxQuestions) * 100;
@@ -193,8 +197,7 @@ const ProgressBar = ({ timeRemaining, questionsAnswered, maxTime, maxQuestions }
   );
 };
 
-
-// Main App Component
+// Main App Component with Timer & Counter
 function App() {
   const [currentView, setCurrentView] = useState('landing');
   const [userInfo, setUserInfo] = useState(null);
@@ -300,7 +303,12 @@ function App() {
 
   const startInterview = async () => {
     try {
-      const response = await fetch('/api/chat/start', { method: 'POST' });
+      const response = await fetch(`${BACKEND_URL}/api/chat/start`, { 
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        }
+      });
       const data = await response.json();
       setSessionId(data.sessionId);
       setMessages([{ 
@@ -316,6 +324,11 @@ function App() {
       setInterviewEnded(false);
     } catch (error) {
       console.error('Failed to start interview:', error);
+      setMessages([{
+        type: 'bot',
+        content: 'Sorry, I\'m having trouble connecting to the server. Please try again later or contact support.',
+        timestamp: new Date()
+      }]);
     }
   };
 
@@ -331,18 +344,28 @@ function App() {
     setQuestionsAnswered(prev => prev + 1);
 
     try {
-      const response = await fetch('/api/chat/message', {
+      const response = await fetch(`${BACKEND_URL}/api/chat/message`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+          'Content-Type': 'application/json',
+        },
         body: JSON.stringify({ sessionId, message: input })
       });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
 
       const data = await response.json();
       const botMessage = { type: 'bot', content: data.message, timestamp: new Date() };
       setMessages(prev => [...prev, botMessage]);
     } catch (error) {
       console.error('Failed to send message:', error);
-      const errorMessage = { type: 'bot', content: 'Sorry, I encountered an error. Please try again.', timestamp: new Date() };
+      const errorMessage = { 
+        type: 'bot', 
+        content: 'Sorry, I encountered an error. Please try again or check your connection.', 
+        timestamp: new Date() 
+      };
       setMessages(prev => [...prev, errorMessage]);
     } finally {
       setIsLoading(false);
@@ -352,7 +375,16 @@ function App() {
   const generateReport = async () => {
     try {
       // Add completion stats to report request
-      const response = await fetch(`/api/chat/report/${sessionId}?timeUsed=${MAX_TIME - timeRemaining}&questionsAnswered=${questionsAnswered}&endReason=${endReason}`);
+      const response = await fetch(`${BACKEND_URL}/api/chat/report/${sessionId}?timeUsed=${MAX_TIME - timeRemaining}&questionsAnswered=${questionsAnswered}&endReason=${endReason}`, {
+        headers: {
+          'Content-Type': 'application/json',
+        }
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      
       const reportData = await response.json();
       
       // Add timing and question data to report
@@ -372,6 +404,7 @@ function App() {
       setCurrentView('report');
     } catch (error) {
       console.error('Failed to generate report:', error);
+      alert('Failed to generate report. Please try again.');
     }
   };
 
