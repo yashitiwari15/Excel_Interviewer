@@ -8,7 +8,7 @@
 ![MongoDB](https://img.shields.io/badge/MongoDB-4EA94B?style=for-the-badge&logo=mongodb&logoColor=white)
 ![OpenAI](https://img.shields.io/badge/OpenAI-412991?style=for-the-badge&logo=openai&logoColor=white)
 
-** [Live Demo]([https://your-app-url.onrender.com](https://excel-interviewer-khaki.vercel.app/))
+** [Live Demo]([(https://excel-interviewer-khaki.vercel.app/)])
 
 </div>
 
@@ -185,6 +185,6 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 
 **⭐ If you found this project helpful, please give it a star! ⭐**
 
-[🚀 Live Demo](https://your-app-url.onrender.com) | [📁 Repository](https://github.com/yourusername/excel-interview-bot) | [🐛 Report Bug](https://github.com/yourusername/excel-interview-bot/issues)
+[🚀 Live Demo]((https://excel-interviewer-khaki.vercel.app/)) | 
 
 </div>
