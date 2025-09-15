@@ -1,3 +1,5 @@
+const UserResult = require('../models/UserResult');
+
 const express = require('express');
 const router = express.Router();
 const openaiService = require('../services/openaiService');
