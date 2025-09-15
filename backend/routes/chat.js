@@ -1,5 +1,4 @@
 const UserResult = require('../models/UserResult');
-
 const express = require('express');
 const router = express.Router();
 const openaiService = require('../services/openaiService');
@@ -22,7 +21,6 @@ router.post('/message', async (req, res) => {
         if (!sessionId || !message) {
             return res.status(400).json({ error: 'Session ID and message required' });
         }
-
         const response = await openaiService.generateResponse(sessionId, message);
         res.json(response);
     } catch (error) {
@@ -31,16 +29,43 @@ router.post('/message', async (req, res) => {
     }
 });
 
-// Get final report
-router.get('/report/:sessionId', (req, res) => {
-    const { sessionId } = req.params;
-    const report = openaiService.generateFinalReport(sessionId);
-    
-    if (!report) {
-        return res.status(404).json({ error: 'Session not found' });
+// Get final report - UPDATED WITH DATABASE SAVE
+router.get('/report/:sessionId', async (req, res) => {
+    try {
+        const { sessionId } = req.params;
+        const report = openaiService.generateFinalReport(sessionId);
+        
+        if (!report) {
+            return res.status(404).json({ error: 'Session not found' });
+        }
+        
+        // Save to MongoDB
+        const { name, email, company, experience } = req.query;
+        
+        if (name && email) {
+            try {
+                await UserResult.create({
+                    name,
+                    email,
+                    company,
+                    experience,
+                    score: report.overallScore,
+                    skillLevel: report.skillLevel,
+                    strengths: report.strengths,
+                    improvements: report.improvements,
+                    completedAt: new Date(),
+                });
+                console.log("✅ User result saved successfully");
+            } catch (err) {
+                console.error("❌ Error saving user result:", err);
+            }
+        }
+        
+        res.json(report);
+    } catch (error) {
+        console.error('Report error:', error);
+        res.status(500).json({ error: 'Failed to generate report' });
     }
-    
-    res.json(report);
 });
 
 module.exports = router;
