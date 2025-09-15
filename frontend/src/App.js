@@ -374,8 +374,18 @@ function App() {
 
   const generateReport = async () => {
     try {
-      // Add completion stats to report request
-      const response = await fetch(`${BACKEND_URL}/api/chat/report/${sessionId}?timeUsed=${MAX_TIME - timeRemaining}&questionsAnswered=${questionsAnswered}&endReason=${endReason}`, {
+      // Build query parameters with user info
+      const params = new URLSearchParams({
+        name: userInfo?.name || '',
+        email: userInfo?.email || '',
+        company: userInfo?.company || '',
+        experience: userInfo?.experience || '',
+        timeUsed: MAX_TIME - timeRemaining,
+        questionsAnswered,
+        endReason,
+      });
+
+      const response = await fetch(`${BACKEND_URL}/api/chat/report/${sessionId}?${params.toString()}`, {
         headers: {
           'Content-Type': 'application/json',
         }
