@@ -8,7 +8,9 @@
 ![MongoDB](https://img.shields.io/badge/MongoDB-4EA94B?style=for-the-badge&logo=mongodb&logoColor=white)
 ![OpenAI](https://img.shields.io/badge/OpenAI-412991?style=for-the-badge&logo=openai&logoColor=white)
 
-** [Live Demo]([(https://excel-interviewer-khaki.vercel.app/)])
+ [Live Demo](https://excel-interviewer-khaki.vercel.app/)
+
+
 
 </div>
 
