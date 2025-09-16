@@ -2,6 +2,8 @@
 
 <div align="center">
 
+![Alt text](https://github.com/user-attachments/assets/670e7efe-4541-4bc1-b144-50fdebe21535)
+
 ![Excel Interview Bot](https://img.shields.io/badge/Excel-Interview%20Bot-brightgreen?style=for-the-badge&logo=microsoft-excel)
 ![React](https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)
 ![Node.js](https://img.shields.io/badge/Node.js-43853D?style=for-the-badge&logo=node.js&logoColor=white)
